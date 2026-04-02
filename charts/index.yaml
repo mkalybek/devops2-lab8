@@ -1,0 +1,22 @@
+apiVersion: v1
+entries:
+  myapp:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-04-02T13:25:28.468316+05:00"
+    dependencies:
+    - name: db
+      repository: file://charts/db
+      version: 0.1.0
+    - condition: app.enabled
+      name: app
+      repository: file://charts/app
+      version: 0.1.0
+    description: A Helm chart for nginx + postgres application
+    digest: 93912500946417f4e0f1a1d3aa28314233f8987e3b6649ba2c94df7c5107013c
+    name: myapp
+    type: application
+    urls:
+    - https://mkalybek.github.io/devops2-lab8/charts/myapp-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-04-02T13:25:28.467175+05:00"

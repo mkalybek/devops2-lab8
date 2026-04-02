@@ -1,0 +1,35 @@
+# -- Default values for the database subchart
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
+
+port: 5432
+
+auth:
+  username: "admin"
+  password: "secret"
+  database: "appdb"
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "250m"
+
+service:
+  type: ClusterIP
+
+rbac:
+  enabled: true
+  rules:
+    - apiGroups: [""]
+      resources: ["pods"]
+      verbs: ["get", "list", "watch"]
+
+networkPolicy:
+  enabled: true

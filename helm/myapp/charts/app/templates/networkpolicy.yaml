@@ -2,25 +2,29 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ .Values.db.name }}
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      app: {{ .Values.db.name }}
+      {{- include "app.selectorLabels" . | nindent 6 }}
   policyTypes:
     - Ingress
     - Egress
   ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-              app: {{ .Values.app.name }}
-      ports:
-        - port: {{ .Values.db.port }}
+    - ports:
+        - port: {{ .Values.port }}
           protocol: TCP
   egress:
-    - to: []
+    - to:
+        - podSelector:
+            matchLabels:
+              app: {{ include "app.dbFullname" . }}
       ports:
+        - port: 5432
+          protocol: TCP
+    - ports:
         - port: 53
           protocol: UDP
         - port: 53

@@ -1,31 +1,25 @@
-app:
-  name: nginx-app
-  replicaCount: 1
-  image:
-    repository: nginx
-    tag: latest
-  port: 80
-  resources:
-    requests:
-      memory: "64Mi"
-      cpu: "50m"
-    limits:
-      memory: "128Mi"
-      cpu: "100m"
-  env:
-    DB_HOST: "postgres"
-    DB_PORT: "5432"
-    DB_USER: "admin"
-    DB_PASSWORD: "secret"
-    DB_NAME: "appdb"
+# -- Parent chart values that get passed down to subcharts
 
 db:
-  name: postgres
+  # -- Enable or disable the database subchart
+  enabled: true
+  # -- Number of database replicas
   replicaCount: 1
   image:
+    # -- Database image repository
     repository: postgres
+    # -- Database image tag
     tag: "16"
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+  # -- Database port
   port: 5432
+  # -- Database credentials and configuration
+  auth:
+    username: "admin"
+    password: "secret"
+    database: "appdb"
+  # -- Resource requests and limits for the database
   resources:
     requests:
       memory: "128Mi"
@@ -33,16 +27,64 @@ db:
     limits:
       memory: "256Mi"
       cpu: "250m"
-  env:
-    POSTGRES_USER: "admin"
-    POSTGRES_PASSWORD: "secret"
-    POSTGRES_DB: "appdb"
+  # -- Service configuration
+  service:
+    type: ClusterIP
+  # -- RBAC configuration
+  rbac:
+    enabled: true
+    rules:
+      - apiGroups: [""]
+        resources: ["pods"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["persistentvolumeclaims"]
+        verbs: ["get", "list"]
+  # -- Network policy configuration
+  networkPolicy:
+    enabled: true
 
-networkPolicy:
+app:
+  # -- Enable or disable the app subchart
   enabled: true
-
-rbac:
-  enabled: true
-
-serviceAccount:
-  create: true
+  # -- Number of app replicas
+  replicaCount: 1
+  image:
+    # -- App image repository
+    repository: nginx
+    # -- App image tag
+    tag: latest
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+  # -- App container port
+  port: 80
+  # -- Resource requests and limits for the app
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+  # -- Service configuration
+  service:
+    type: ClusterIP
+  # -- Ingress configuration
+  ingress:
+    enabled: true
+    host: myapp.local
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+  # -- RBAC configuration
+  rbac:
+    enabled: true
+    rules:
+      - apiGroups: [""]
+        resources: ["pods", "services"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["configmaps"]
+        verbs: ["get", "list"]
+  # -- Network policy configuration
+  networkPolicy:
+    enabled: true

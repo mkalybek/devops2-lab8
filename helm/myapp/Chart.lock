@@ -1,0 +1,9 @@
+dependencies:
+- name: db
+  repository: file://charts/db
+  version: 0.1.0
+- name: app
+  repository: file://charts/app
+  version: 0.1.0
+digest: sha256:0b84907e05071758a7dfa6b073e7c6ade45650596c809b1b7274ab1aba7b6629
+generated: "2026-04-02T13:24:48.542197+05:00"
