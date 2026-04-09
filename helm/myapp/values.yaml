@@ -14,8 +14,11 @@ db:
     pullPolicy: IfNotPresent
   # -- Database port
   port: 5432
-  # -- Database credentials and configuration
+  # -- Database credentials and configuration. When existingSecret is set,
+  # credentials are loaded via envFrom from that Secret (e.g. produced by
+  # Sealed Secrets / ESO) instead of the inline username/password/database.
   auth:
+    existingSecret: "postgres-credentials"
     username: "admin"
     password: "secret"
     database: "appdb"

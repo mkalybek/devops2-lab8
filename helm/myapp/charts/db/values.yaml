@@ -9,6 +9,10 @@ image:
 port: 5432
 
 auth:
+  # When existingSecret is set, POSTGRES_USER/PASSWORD/DB are sourced from
+  # envFrom instead of the inline values below. Use this with Sealed Secrets
+  # or ESO so credentials never live in git.
+  existingSecret: "postgres-credentials"
   username: "admin"
   password: "secret"
   database: "appdb"
